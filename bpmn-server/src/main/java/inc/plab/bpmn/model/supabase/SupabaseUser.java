@@ -1,18 +1,13 @@
 package inc.plab.bpmn.model.supabase;
 
 import inc.plab.bpmn.model.user.Profile;
-import inc.plab.bpmn.model.user.ProfileRepository;
 import inc.plab.bpmn.websecurity.SupabaseGrantedAuthority;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -69,6 +64,19 @@ public class SupabaseUser implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
+        // roles are currently only in raw app meta data
+        if (rawAppMetaData != null && rawAppMetaData.containsKey("userroles")) {
+            Object rolesObj = rawAppMetaData.get("userroles");
+            if (rolesObj instanceof List<?> roles) {
+                for (Object role : roles) {
+                    if (role instanceof String roleStr) {
+                        authorities.add(new SupabaseGrantedAuthority("ROLE_" + roleStr.toUpperCase()));
+                    }
+                }
+            }
+        }
+
+        /*
         if (rawUserMetaData != null) {
             String role = (String) rawUserMetaData.get("role");
 
@@ -77,7 +85,7 @@ public class SupabaseUser implements UserDetails {
             }
 
         }
-
+        */
         if(role != null){
             authorities.add(new SupabaseGrantedAuthority("ROLE_" + role.toUpperCase()));
         }

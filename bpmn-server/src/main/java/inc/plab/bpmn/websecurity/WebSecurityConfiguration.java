@@ -34,8 +34,11 @@ public class WebSecurityConfiguration {
         http
                 .cors(cors -> {})
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated()
+               // .exceptionHandling(exceptionConfigurer -> exceptionConfigurer.authenticationEntryPoint(delegatedAuthenticationEntryPoint))
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers("/bpmn/scenario/**").hasAnyRole("TEACHER", "TECHNICAL_USER", "MODERATOR")
+                        .requestMatchers("/bpmn/process/**").hasAnyRole("TEACHER", "STUDENT", "TECHNICAL_USER", "MODERATOR")
+                        .requestMatchers("/camunda/**").permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.decoder(jwtDecoder())
