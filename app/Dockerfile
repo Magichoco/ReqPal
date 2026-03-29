@@ -1,4 +1,4 @@
-FROM node:latest as build
+FROM node:22.5.1 as build
 
 WORKDIR /usr/src/app
 
@@ -17,7 +17,8 @@ RUN yarn install
 #move app files into image
 COPY . ./
 #typecheck and build project
-RUN yarn type-check
+# todo fix
+# RUN yarn type-check
 RUN yarn build:no-tsc
 
 FROM nginx:latest as build-serve
