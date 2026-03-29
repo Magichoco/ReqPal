@@ -52,3 +52,22 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Dependencies
+/node_modules
+
+# Build directory
+/dist
+
+# Build info
+tsconfig.tsbuildinfo
+
+# Cache directories
+/.cache
+/.output
+
+# Env files (You might want to ignore only specific env files, depending on your needs)
+/.env
+
+# Logs
+/*.log*
