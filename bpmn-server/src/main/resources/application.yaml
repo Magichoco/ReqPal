@@ -41,6 +41,11 @@ spring:
       idle-timeout: 300000
       max-lifetime: 600000
   security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://${SUPABASE_PROJECT_ID}.supabase.co/auth/v1
+          jwk-set-uri: https://${SUPABASE_PROJECT_ID}.supabase.co/auth/v1/.well-known/jwks.json
     filter:
       order: 10
 server:
@@ -53,9 +58,6 @@ resilience4j:
         limit-refresh-period: 60s
         timeout-duration: 0s
 app:
-  supabase:
-    jwt:
-      secret: ${SUPABASE_JWT_SECRET}
   aws:
     endpoint: https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3
     access:
