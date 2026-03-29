@@ -1,5 +1,6 @@
 package inc.plab.bpmn.websecurity;
 
+import inc.plab.bpmn.model.supabase.SupabaseJwtConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,18 +29,17 @@ public class WebSecurityConfiguration {
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkSetUri;
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SupabaseJwtConverter converter) throws Exception {
         http
                 .cors(cors -> {})
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().authenticated()
                 )
-                // todo only works with @AuthenticationPrincipal Jwt jwt, not Supabase User yet in Controller
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.decoder(jwtDecoder()))
+                        .jwt(jwt -> jwt.decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(converter))
                 );
         return http.build();
     }
