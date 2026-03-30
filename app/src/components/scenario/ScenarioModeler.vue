@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import {markRaw, onBeforeUnmount, onMounted, ref} from "vue";
 import "bpmn-js-color-picker/colors/color-picker.css";
 import "bpmn-js/dist/assets/bpmn-js.css";
 import "bpmn-js/dist/assets/diagram-js.css";
@@ -87,7 +87,8 @@ const propertiesPanel = ref<HTMLElement | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
 
 onMounted(() => {
-  scenarioModelerStore.bpmnModeler = new BpmnModeler({
+  // TODO: may need refactoring, markRaw needed to avoid errors when loading the model
+  scenarioModelerStore.bpmnModeler = markRaw(new BpmnModeler({
     container: bpmnContainer.value,
     propertiesPanel: {
       parent: propertiesPanel.value
@@ -113,7 +114,7 @@ onMounted(() => {
     keyboard: {
       bindTo: window
     }
-  });
+  }));
   scenarioModelerStore.loadInDiagram();
 });
 
